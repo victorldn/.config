@@ -3,6 +3,19 @@
 MODE="$1"
 STATE_FILE="/tmp/eww-pomodoro.pid"
 
+to_seconds() {
+  IFS=: read -r m s <<EOF
+$1
+EOF
+  echo $((10#$m * 60 + 10#$s))
+}
+
+to_mmss() {
+  total="$1"
+  [ "$total" -lt 0 ] && total=0
+  printf '%02d:%02d' "$((total / 60))" "$((total % 60))"
+}
+
 stop_existing() {
   if [ -f "$STATE_FILE" ]; then
     old_pid="$(cat "$STATE_FILE")"
@@ -22,17 +35,24 @@ run_timer() {
 
     remaining="$total_seconds"
 
-    while [ "$remaining" -ge 0 ]; do
-      mins=$((remaining / 60))
-      secs=$((remaining % 60))
+    eww update pomo_time="$(to_mmss "$total_seconds")"
 
-      eww update pomo_time="$(printf '%02d:%02d' "$mins" "$secs")"
+    while true; do
+	current="$(eww get pomo_time 2>/dev/null)"
+	remaining="$(to_seconds "$current")"
 
-      sleep 1
-      remaining=$((remaining - 1))
+	[ "$remaining" -le 0 ] && break
+
+	sleep 1
+
+	current="$(eww get pomo_time 2>/dev/null)"
+	remaining="$(to_seconds "$current")"
+	remaining=$((remaining - 1))
+
+	eww update pomo_time="$(to_mmss "$remaining")"
     done
 
-    eww update pomo_state="🚨 TIME UP 🚨"w
+    eww update pomo_state="🚨 TIME UP 🚨"
 
     # Alternative symbol: 
     notify-send \
@@ -65,9 +85,10 @@ case "$MODE" in
     run_timer 300 "break"
     ;;
   reset)
-    stop_existing
-    eww update pomo_time="25:00"
-    eww update pomo_state="stopped"
+      stop_existing
+      eww update pomo_minutes="25"
+      eww update pomo_time="25:00"
+      eww update pomo_state="stopped"
     ;;
   *)
     echo "Usage: pomodoro.sh work|break|reset"
