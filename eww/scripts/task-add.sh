@@ -1,15 +1,24 @@
 #!/usr/bin/env bash
 
-desc="$(eww get new_task)"
-due="$(eww get new_task_due)"
+title="$(eww get new_task 2>/dev/null)"
+due="$(eww get new_task_due 2>/dev/null)"
 
-[ -z "$desc" ] && exit 0
+[ -z "$title" ] && exit 0
 
-if [ -n "$due" ]; then
-  task add "$desc" due:"$due"
-else
-  task add "$desc"
-fi
+emacsclient --eval "
+(progn
+  (require 'org)
+  (require 'org-id)
+  (find-file \"~/org/inbox.org\")
+  (goto-char (point-max))
+  (unless (bolp) (insert \"\n\"))
+  (insert \"* TODO $title\n\")
+  (forward-line -1)
+  (org-id-get-create)
+  (when (and \"$due\" (not (string= \"$due\" \"\")))
+    (org-deadline nil \"$due\"))
+  (save-buffer))
+"
 
 eww update new_task="" new_task_due=""
-eww update tasks_yuck="$(~/.config/eww/scripts/task-table.yuck.sh)"
+eww update tasks_yuck="$(~/.config/eww/scripts/org-table.yuck.sh)"

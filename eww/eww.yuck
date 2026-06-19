@@ -45,7 +45,7 @@
 
 (defpoll tasks_yuck
   :interval "10s"
-  "~/.config/eww/scripts/task-table.yuck.sh")
+  "~/.config/eww/scripts/org-table.yuck.sh")
 
 (defwindow dashboard
   :geometry
