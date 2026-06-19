@@ -19,6 +19,17 @@
        ((<= days 7) (format "%dd" days))
        (t (format-time-string "%d %b" time))))))
 
+(defun eww-org-clock-minutes-for-id (id)
+  (require 'org-clock)
+  (let ((m (org-id-find id 'marker)))
+    (if (not m)
+        0
+      (with-current-buffer (marker-buffer m)
+        (save-excursion
+          (goto-char m)
+          (org-clock-sum-current-item)
+          org-clock-file-total-minutes)))))
+
 (defun eww-org-escape (s)
   (json-encode-string (or s "")))
 
@@ -53,9 +64,9 @@
                        (eww-org-escape date)))
         (princ (format "    (label :class \"todo-desc\" :hexpand true :xalign 0 :text %s)\n"
                        (eww-org-escape title)))
-	(princ (format  "    (button :class \"todo-select-button\" :onclick \"eww update active_task_id='%s' active_task_desc='%s'\" \"›\")\n"
-			id
-			title))
+	(princ (format "    (button :class \"todo-select-button\" :onclick \"~/.config/eww/scripts/org-select-task.sh %s '%s'\" \"›\")\n"
+		       id
+		       title))
         (princ (format "    (button :class \"todo-done-button\" :onclick \"~/.config/eww/scripts/org-task-action.sh done %s\" \"✓\")\n"
                        id))
         (princ "  )\n")))

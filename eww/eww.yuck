@@ -8,6 +8,10 @@
 (defvar active_task_desc "No active task")
 (defvar due_picker_open false)
 
+(defpoll active_task_time
+  :interval "30s"
+  "~/.config/eww/scripts/org-task-clock-total.sh")
+
 (defpoll todo_text
   :interval "10s"
   "task rc.color=off next")
@@ -115,6 +119,10 @@
   (label :class "section-title" :text "Pomodoro")
 
   (label :class "active-task" :text active_task_desc)
+
+  (label
+	:class "active-task-time"
+	:text "Total: ${active_task_time}")
 
   (label
     :class "pomodoro-time"

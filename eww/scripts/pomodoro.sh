@@ -3,6 +3,16 @@
 MODE="$1"
 STATE_FILE="/tmp/eww-pomodoro.pid"
 
+task_id="$(eww get active_task_id 2>/dev/null)"
+
+clock_task() {
+  local action="$1"
+
+  [ -z "$task_id" ] && return 0
+
+  ~/.config/eww/scripts/org-clock-action.sh "$action" "$task_id"
+}
+
 to_seconds() {
   IFS=: read -r m s <<EOF
 $1
@@ -69,6 +79,10 @@ run_timer() {
 	done
     ) &
     
+    if [ "$label" = "working" ]; then
+	clock_task out
+    fi
+
     rm -f "$STATE_FILE"
   ) &
 
@@ -79,13 +93,16 @@ case "$MODE" in
   work)
     minutes="$(eww get pomo_minutes 2>/dev/null)"
     minutes="${minutes:-25}"
+    clock_task in
     run_timer "$((minutes * 60))" "working"
     ;;
   break)
+    clock_task out
     run_timer 300 "break"
     ;;
   reset)
       stop_existing
+      clock_task out
       eww update pomo_minutes="25"
       eww update pomo_time="25:00"
       eww update pomo_state="stopped"
@@ -95,3 +112,4 @@ case "$MODE" in
     exit 1
     ;;
 esac
+
