@@ -1,0 +1,175 @@
+(defvar quick_note "")
+(defvar new_task "")
+(defvar new_task_due "tomorrow")
+(defvar pomo_time "25:00")
+(defvar pomo_minutes "25")
+(defvar pomo_state "stopped")
+(defvar active_task_id "")
+(defvar active_task_desc "No active task")
+(defvar due_picker_open false)
+
+(defpoll todo_text
+  :interval "10s"
+  "task rc.color=off next")
+
+(defpoll calendar_text
+  :interval "60s"
+  "date '+%A, %d %B %Y'")
+
+(defpoll quick_notes_text
+  :interval "10s"
+  "tail -n 8 ~/quick-notes.txt 2>/dev/null || echo 'No notes yet'")
+
+(defwindow due-picker
+  :geometry
+    (geometry
+      :x "390px"
+      :y "120px"
+      :width "180px"
+      :height "160px"
+      :anchor "top left")
+  :windowtype "normal"
+  :focusable true
+  (box
+    :orientation "vertical"
+    :class "card due-picker"
+    :space-evenly false
+
+    (button :onclick "eww update new_task_due='today'; eww close due-picker" "Today")
+    (button :onclick "eww update new_task_due='tomorrow'; eww close due-picker" "Tomorrow")
+    (button :onclick "eww update new_task_due='eow'; eww close due-picker" "End of week")
+    (button :onclick "eww update new_task_due='eom'; eww close due-picker" "End of month")))
+
+(defwidget todo-table []
+  (literal :content "${tasks_yuck}"))
+
+(defpoll tasks_yuck
+  :interval "10s"
+  "~/.config/eww/scripts/task-table.yuck.sh")
+
+(defwindow dashboard
+  :geometry
+    (geometry
+      :x "20px"
+      :y "40px"
+      :width "360px"
+      :height "520px"
+      :anchor "top left")
+  :stacking "fg"
+  :windowtype "normal"
+  :exclusive false
+  :focusable true
+  (dashboard-widget))
+  
+(defwidget dashboard-widget []
+  (box
+    :orientation "vertical"
+    :spacing 12
+    :space-evenly false
+    :class "dashboard"
+    
+    (label
+      :class "title"
+      :text "Dashboard"
+      :vexpand false)
+
+    (box
+      :orientation "vertical"
+      :class "card todo-card"
+      :space-evenly false
+      :vexpand true
+      
+      (label :class "section-title"
+        :text "TODO"
+	:vexpand false
+	:yalign 0)
+	
+      (scroll
+        :height 100
+        :vexpand true
+        (todo-table))
+
+    (box
+      :orientation "horizontal"
+      :class "todo-add-row"
+      :space-evenly false
+      :spacing 6
+    
+      (input
+        :class "todo-input"
+        :hexpand true
+        :value new_task
+        :onchange "eww update new_task='{}'"
+        :onaccept "~/.config/eww/scripts/task-add.sh")
+    
+      (button
+        :class "todo-calendar-button"
+        :onclick "~/.config/eww/scripts/select-due-date.sh"
+        "")))
+  
+(box
+  :orientation "vertical"
+  :class "card pomodoro-card"
+  :space-evenly false
+
+  (label :class "section-title" :text "Pomodoro")
+
+  (label :class "active-task" :text active_task_desc)
+
+  (label
+    :class "pomodoro-time"
+    :text "${pomo_time}")
+
+  (label
+    :class "pomodoro-state"
+    :text pomo_state)
+
+  (box
+    :orientation "horizontal"
+    :space-evenly true
+    :class "pomodoro-actions"
+
+    (button
+      :hexpand true
+      :onclick "~/.config/eww/scripts/pomodoro.sh work"
+      "Work")
+
+    (button
+      :hexpand true
+      :onclick "~/.config/eww/scripts/pomodoro.sh break"
+      "Break")
+
+    (button
+      :hexpand true
+      :onclick "~/.config/eww/scripts/pomodoro.sh reset"
+      "Reset")
+
+    (button
+      :onclick "~/.config/eww/scripts/pomodoro-adjust.sh minus"
+      "-")
+
+    (button
+      :onclick "~/.config/eww/scripts/pomodoro-adjust.sh plus"
+      "+")))
+      
+(box
+  :orientation "vertical"
+  :class "card quick-note-card"
+  :space-evenly false
+
+  (label :class "section-title" :text "Quick note")
+
+  (scroll
+    :height 80
+    (label
+      :class "quick-notes-text"
+      :text quick_notes_text
+      :xalign 0
+      :yalign 0))
+
+  (input
+    :class "quick-note-input"
+    :value quick_note
+    :onchange "eww update quick_note='{}'"
+    :onaccept "sh -c 'note=$(eww get quick_note); [ -n \"$note\" ] && printf \"%s  %s\n\" \"$(date \"+%Y-%m-%d %H:%M\")\" \"$note\" >> ~/quick-notes.txt; eww update quick_note=\"\" quick_notes_text=\"$(tail -n 8 ~/quick-notes.txt 2>/dev/null)\"'"))
+  ))

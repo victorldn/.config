@@ -1,0 +1,8 @@
+!regolith.look.path: /usr/share/regolith-look/lascaille
+regolith.look.path: /usr/share/regolith-look/nord
+i3-wm.workspace.01.name: 1:
+i3-wm.workspace.02.name: 2:
+i3-wm.workspace.03.name: 3:
+i3-wm.workspace.04.name: 4A:
+i3-wm.workspace.09.name: 9:
+i3-wm.workspace.10.name: 0:

@@ -1,0 +1,16 @@
+bindsym $mod+m move workspace to output next
+bindsym $mod+q floating toggle
+
+assign [class="Emacs"] workspace $ws1
+assign [class="Slack"] workspace $ws2
+assign [class="thunderbird-esr"] workspace $ws2
+assign [class="firefox"] workspace $ws3
+assign [class="Spotify"] workspace $ws10
+
+exec --no-startup-id i3-msg 'exec spotify'
+exec --no-startup-id i3-msg 'exec slack'
+exec --no-startup-id i3-msg 'exec thunderbird'
+exec --no-startup-id i3-msg 'exec firefox'
+exec --no-startup-id i3-msg 'exec gnome-terminal'
+
+exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1

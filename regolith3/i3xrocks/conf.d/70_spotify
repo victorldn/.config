@@ -1,0 +1,3 @@
+[spotify]
+command=~/.local/bin/regolith-spotify
+interval=5

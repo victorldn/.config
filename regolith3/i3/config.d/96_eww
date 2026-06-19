@@ -1,0 +1,4 @@
+bindsym $mod+Shift+d exec --no-startup-id eww open --toggle dashboard
+
+for_window [class="eww"] floating enable
+for_window [class="eww"] focus
