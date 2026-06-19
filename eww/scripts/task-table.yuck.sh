@@ -73,11 +73,11 @@ task status:pending export | jq -r '
   echo '      "›")'
 
   echo "    (button :class \"todo-done-button\""
-  echo "      :onclick \"task $id done\""
+  echo "      :onclick \"~/.config/eww/scripts/task-action.sh done $id\""
   echo '      "✓")'
 
   echo "    (button :class \"todo-delete-button\""
-  echo "      :onclick \"task $id delete rc.confirmation=no\""
+  echo "      :onclick \"~/.config/eww/scripts/task-action.sh delete $id\""
   echo '      "✕"))'
 done
 
