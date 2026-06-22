@@ -46,7 +46,7 @@
                   (scheduled (org-entry-get nil "SCHEDULED"))
                   (date (eww-org-format-date (or deadline scheduled "-"))))
              (push (list id title date file) items)))
-         "TODO=\"TODO\"")))
+         "TODO=\"TODO\"-EWw_DEFAULT=\"true\"")))
     (nreverse items)))
 
 (defun eww-org-render-todos ()

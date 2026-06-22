@@ -94,6 +94,12 @@ case "$MODE" in
     minutes="$(eww get pomo_minutes 2>/dev/null)"
     minutes="${minutes:-25}"
     clock_task in
+
+    if [ -f /tmp/pomodoro-alert.pid ]; then
+	kill "$(cat /tmp/pomodoro-alert.pid)" 2>/dev/null
+	rm -f /tmp/pomodoro-alert.pid
+    fi
+
     run_timer "$((minutes * 60))" "working"
     ;;
   break)

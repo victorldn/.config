@@ -7,6 +7,7 @@
 (defvar active_task_id "")
 (defvar active_task_desc "No active task")
 (defvar due_picker_open false)
+(defvar quick_notes_text "No notes yet")
 
 (defpoll active_task_time
   :interval "30s"
@@ -19,10 +20,6 @@
 (defpoll calendar_text
   :interval "60s"
   "date '+%A, %d %B %Y'")
-
-(defpoll quick_notes_text
-  :interval "10s"
-  "tail -n 8 ~/quick-notes.txt 2>/dev/null || echo 'No notes yet'")
 
 (defwindow due-picker
   :geometry
@@ -173,11 +170,12 @@
       :class "quick-notes-text"
       :text quick_notes_text
       :xalign 0
-      :yalign 0))
-
-  (input
-    :class "quick-note-input"
-    :value quick_note
-    :onchange "eww update quick_note='{}'"
-    :onaccept "sh -c 'note=$(eww get quick_note); [ -n \"$note\" ] && printf \"%s  %s\n\" \"$(date \"+%Y-%m-%d %H:%M\")\" \"$note\" >> ~/quick-notes.txt; eww update quick_note=\"\" quick_notes_text=\"$(tail -n 8 ~/quick-notes.txt 2>/dev/null)\"'"))
+      :yalign 0
+      :wrap true
+      :wrap-mode "word"))
+      (input
+        :class "quick-note-input"
+	:value quick_note
+  	:onchange "eww update quick_note='{}'"
+  	:onaccept "~/.config/eww/scripts/org-add-note.sh"))
   ))
