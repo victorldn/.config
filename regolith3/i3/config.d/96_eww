@@ -1,7 +1,9 @@
 exec_always --no-startup-id ~/.config/eww/start.sh
 exec_always --no-startup-id ~/.config/eww/scripts/start-watchdog.sh
+exec_always --no-startup-id ~/.config/eww/scripts/start-rofication.sh
 
 bindsym $mod+Shift+d exec --no-startup-id eww open --toggle dashboard
+bindsym $mod+n exec --no-startup-id rofication-gui
 
 for_window [class="eww"] floating enable
 for_window [class="eww"] focus
