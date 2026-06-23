@@ -8,6 +8,7 @@
 (defvar active_task_desc "No active task")
 (defvar due_picker_open false)
 (defvar quick_notes_text "No notes yet")
+(defvar quick_notes_yuck "(label :text \"No notes yet\")")
 
 (defpoll active_task_time
   :interval "30s"
@@ -40,6 +41,9 @@
     (button :onclick "eww update new_task_due='tomorrow'; eww close due-picker" "Tomorrow")
     (button :onclick "eww update new_task_due='eow'; eww close due-picker" "End of week")
     (button :onclick "eww update new_task_due='eom'; eww close due-picker" "End of month")))
+
+(defwidget quick-notes []
+  (literal :content "${quick_notes_yuck}"))
 
 (defwidget todo-table []
   (literal :content "${tasks_yuck}"))
@@ -156,26 +160,21 @@
     (button
       :onclick "~/.config/eww/scripts/pomodoro-adjust.sh plus"
       "+")))
-      
-(box
-  :orientation "vertical"
-  :class "card quick-note-card"
-  :space-evenly false
 
-  (label :class "section-title" :text "Quick note")
+  (box
+    :orientation "vertical"
+    :class "card quick-note-card"
+    :space-evenly false
 
-  (scroll
-    :height 80
-    (label
-      :class "quick-notes-text"
-      :text quick_notes_text
-      :xalign 0
-      :yalign 0
-      :wrap true
-      :wrap-mode "word"))
-      (input
-        :class "quick-note-input"
-	:value quick_note
-  	:onchange "eww update quick_note='{}'"
-  	:onaccept "~/.config/eww/scripts/org-add-note.sh"))
+    (label :class "section-title" :text "Quick note")
+
+    (scroll
+      :height 80
+      (quick-notes))
+
+    (input
+      :class "quick-note-input"
+      :value quick_note
+      :onchange "eww update quick_notes_yuck=\"$(~/.config/eww/scripts/org-task-notes-yuck.sh)\""
+      :onaccept "~/.config/eww/scripts/org-add-note.sh"))
   ))

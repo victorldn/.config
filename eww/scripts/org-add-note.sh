@@ -58,4 +58,4 @@ ELISP
 )"
 
 eww update quick_note=""
-eww update quick_notes_text="$(~/.config/eww/scripts/org-task-notes.sh)"
+eww update quick_notes_yuck="$(~/.config/eww/scripts/org-task-notes-yuck.sh)"

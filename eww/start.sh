@@ -12,4 +12,4 @@ eww update \
   active_task_id="$active_task_id" \
   active_task_desc="$active_task_desc"
 
-eww update quick_notes_text="$(~/.config/eww/scripts/org-task-notes.sh)"
+eww update quick_notes_yuck="$(~/.config/eww/scripts/org-task-notes-yuck.sh)"
