@@ -1,3 +1,0 @@
-[stockprice]
-command=~/.local/bin/regolith-stockprice
-interval=60
