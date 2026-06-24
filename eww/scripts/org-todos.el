@@ -33,20 +33,48 @@
 (defun eww-org-escape (s)
   (json-encode-string (or s "")))
 
+;; (defun eww-org-collect-todos ()
+;;   (let (items)
+;;     (dolist (file org-agenda-files)
+;;       (with-current-buffer (find-file-noselect file)
+;;         (org-map-entries
+;;          (lambda ()
+;;            (let* ((todo (substring-no-properties
+;;                          (or (org-get-todo-state) "")))
+;;                   (is-default (string= (org-entry-get nil "EWW_DEFAULT") "true"))
+;;                   (title (substring-no-properties
+;;                           (org-get-heading t t t t)))
+;;                   (id (org-id-get-create))
+;;                   (deadline (org-entry-get nil "DEADLINE"))
+;;                   (scheduled (org-entry-get nil "SCHEDULED"))
+;;                   (date (eww-org-format-date
+;;                          (or deadline scheduled "-"))))
+;;              (when (and (string= todo "TODO")
+;;                         (not is-default))
+;;                (push (list id title date file) items))))
+;;          "TODO=\"TODO\"")))
+;;     (nreverse items)))
+
 (defun eww-org-collect-todos ()
   (let (items)
     (dolist (file org-agenda-files)
       (with-current-buffer (find-file-noselect file)
-        (org-map-entries
-         (lambda ()
-           (let* ((todo (org-get-todo-state))
-                  (title (org-get-heading t t t t))
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         (while (re-search-forward org-heading-regexp nil t)
+           (let* ((todo (substring-no-properties
+                         (or (org-get-todo-state) "")))
+                  (is-default (string= (org-entry-get nil "EWW_DEFAULT") "true"))
+                  (title (substring-no-properties
+                          (org-get-heading t t t t)))
                   (id (org-id-get-create))
                   (deadline (org-entry-get nil "DEADLINE"))
                   (scheduled (org-entry-get nil "SCHEDULED"))
-                  (date (eww-org-format-date (or deadline scheduled "-"))))
-             (push (list id title date file) items)))
-         "TODO=\"TODO\"-EWw_DEFAULT=\"true\"")))
+                  (date (eww-org-format-date
+                         (or deadline scheduled "-"))))
+             (when (and (string= todo "TODO")
+                        (not is-default))
+               (push (list id title date file) items)))))))
     (nreverse items)))
 
 (defun eww-org-render-todos ()
