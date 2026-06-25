@@ -3,7 +3,16 @@
 DEFAULT_TASK_ID="inbox-scratchpad"
 
 id="$(eww get active_task_id 2>/dev/null)"
-note="$(eww get quick_note 2>/dev/null)"
+
+# The final `else' is what's used by the tool.
+# Other branches are debugging features.
+if [ $# -gt 0 ]; then
+    note="$*"
+elif [ ! -t 0 ]; then
+    note="$(cat)"
+else
+    note="$(eww get quick_note 2>/dev/null)"
+fi
 
 id="${id:-$DEFAULT_TASK_ID}"
 [ -z "$note" ] && exit 0

@@ -172,9 +172,9 @@
       :height 80
       (quick-notes))
 
-    (input
-      :class "quick-note-input"
-      :value quick_note
-      :onchange "eww update quick_notes_yuck=\"$(~/.config/eww/scripts/org-task-notes-yuck.sh)\""
-      :onaccept "~/.config/eww/scripts/org-add-note.sh"))
-  ))
+(input
+  :class "quick-note-input"
+  :value quick_note
+  :onchange "eww update quick_note='{}'"
+  :onaccept "sh -c '~/.config/eww/scripts/org-add-note.sh'")
+  )))
