@@ -1,30 +1,36 @@
 bindsym $mod+m move workspace to output next
 bindsym $mod+q floating toggle
 
-# exec --no-startup-id env HOME="$HOME" USER="$USER" emacs --daemon
-# exec_always --no-startup-id ~/.config/eww/start.sh
-
+# -------------------------------------------------------------------
 # Application placement
-# Example:
+# -------------------------------------------------------------------
 #
-#   assign [class="(?i)^kitty$"] number 1
+# Window criteria can be inspected with:
 #
-# means:
+#   xprop WM_CLASS
 #
-#   (?i) → ignore case
-#   ^ → start of the string
-#   kitty → the literal text
-#   $ → end of the string
+# Then click the application window.
 #
-# The `class` value given is taken from the following procedure:
-#   1. Run `xprop WM_CLASS` in a terminal
-#   2. Navigate to window to be probed and click on it.
-#
-# this will return smth in the following format:
+# Example output:
 #
 #   WM_CLASS(STRING) = "Navigator", "firefox_firefox"
 #
-# Whereby the first string is the _instance_ and the second the _class_.
+# The first value is the window instance.
+# The second value is the window class.
+#
+# Example rule:
+#
+#   assign [class="(?i)^kitty$"] number 1
+#
+# Regular-expression components:
+#
+#   (?i)   case-insensitive matching
+#   ^      start of the value
+#   kitty  literal class name
+#   $      end of the value
+#
+# Assignment rules apply when a new window is created. Existing windows
+# are not moved when the configuration is reloaded.
 
 # Assignment rules apply when a new window is created. Existing windows
 # are not moved when the configuration is reloaded.
@@ -38,18 +44,21 @@ assign [instance="(?i)^www.irccloud.com__irc_oftc_channel_gcc"] number 8
 assign [class="(?i)^spotify$"] number 7
 assign [class="(?i)^com.cisco.secureclient.gui$"] number 0
 
+# -------------------------------------------------------------------
+# Session startup
+# -------------------------------------------------------------------
+#
+# The startup script checks whether each application is already running
+# before launching it. This prevents duplicate applications if the
+# script is executed more than once.
+#
+# Use exec_always so that restarting i3 restores any applications that
+# are no longer running. The script's process checks prevent duplicates.
 
-# Run once when i3 initially starts
-exec --no-startup-id kitty
-exec --no-startup-id firefox
-exec --no-startup-id emacs
-exec --no-startup-id slack
-exec --no-startup-id spotify
+exec_always --no-startup-id ~/.config/regolith3/i3/start-apps.sh
 
-# exec --no-startup-id i3-msg 'exec spotify'
-# exec --no-startup-id i3-msg 'exec slack'
-# exec --no-startup-id i3-msg 'exec thunderbird'
-# exec --no-startup-id i3-msg 'exec firefox'
-# exec --no-startup-id i3-msg 'exec gnome-terminal'
+# Start the Eww dashboard and its supporting scripts.
+exec_always --no-startup-id ~/.config/eww/start.sh
 
+# PolicyKit authentication agent.
 exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
