@@ -1,0 +1,55 @@
+bindsym $mod+m move workspace to output next
+bindsym $mod+q floating toggle
+
+# exec --no-startup-id env HOME="$HOME" USER="$USER" emacs --daemon
+# exec_always --no-startup-id ~/.config/eww/start.sh
+
+# Application placement
+# Example:
+#
+#   assign [class="(?i)^kitty$"] number 1
+#
+# means:
+#
+#   (?i) → ignore case
+#   ^ → start of the string
+#   kitty → the literal text
+#   $ → end of the string
+#
+# The `class` value given is taken from the following procedure:
+#   1. Run `xprop WM_CLASS` in a terminal
+#   2. Navigate to window to be probed and click on it.
+#
+# this will return smth in the following format:
+#
+#   WM_CLASS(STRING) = "Navigator", "firefox_firefox"
+#
+# Whereby the first string is the _instance_ and the second the _class_.
+
+# Assignment rules apply when a new window is created. Existing windows
+# are not moved when the configuration is reloaded.
+
+assign [class="(?i)^kitty$"] number 3
+assign [class="(?i)^firefox_firefox$"] number 9
+assign [class="(?i)^emacs$"] number 10
+assign [class="(?i)^slack$"] number 8
+assign [class="(?i)^thunderbird_thunderbird$"] number 8
+assign [instance="(?i)^www.irccloud.com__irc_oftc_channel_gcc"] number 8
+assign [class="(?i)^spotify$"] number 7
+assign [class="(?i)^com.cisco.secureclient.gui$"] number 0
+
+
+# Run once when i3 initially starts
+exec --no-startup-id kitty
+exec --no-startup-id firefox
+exec --no-startup-id emacs
+exec --no-startup-id slack
+exec --no-startup-id spotify
+
+# exec --no-startup-id i3-msg 'exec spotify'
+# exec --no-startup-id i3-msg 'exec slack'
+# exec --no-startup-id i3-msg 'exec thunderbird'
+# exec --no-startup-id i3-msg 'exec firefox'
+# exec --no-startup-id i3-msg 'exec gnome-terminal'
+
+exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
