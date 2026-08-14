@@ -42,7 +42,7 @@ assign [class="(?i)^slack$"] number 8
 assign [class="(?i)^thunderbird_thunderbird$"] number 8
 assign [instance="(?i)^www.irccloud.com__irc_oftc_channel_gcc"] number 8
 assign [class="(?i)^spotify$"] number 7
-assign [class="(?i)^com.cisco.secureclient.gui$"] number 0
+assign [class="(?i)^com.cisco.secureclient.gui$"] number 1
 
 # -------------------------------------------------------------------
 # Session startup
@@ -61,4 +61,4 @@ exec_always --no-startup-id ~/.config/regolith3/i3/start-apps.sh
 exec_always --no-startup-id ~/.config/eww/start.sh
 
 # PolicyKit authentication agent.
-exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
+exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 > ~/my-startup-log.log 2>&1
