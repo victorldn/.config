@@ -1,29 +1,25 @@
-# aarch64-ssh.exp
+# ~/.config/dejagnu/boards/aarch64-ssh.exp
 #
-# DejaGNU target board for running AArch64/Linux executables on a
-# remote machine using SSH.
+# Run AArch64/Linux executables on a remote machine over SSH.
 #
-# Compilation takes place locally using the configured GCC cross compiler.
-# Executables produced by execution tests are copied to this target using
-# scp and executed there using ssh.
+# We deliberately use DejaGNU's "standard" remote machinery, but substitute
+# ssh/scp for the historical rsh/rcp programs.  This avoids the quoting issue
+# encountered in DejaGNU 1.6.x's native ssh_exec implementation.
 
 load_generic_config "unix"
 
-# Tell DejaGNU that target operations are remote.
+# This target is remote.
 set_board_info isremote 1
 
-# Select DejaGNU's ssh transport.
-set_board_info connect ssh
+# Use the standard remote protocol.
+set_board_info protocol "standard"
 
-# SSH destination.
-#
-# If you already have an entry called "aarch64-test" in ~/.ssh/config,
-# using that alias here keeps host names, proxy configuration, identities,
-# etc. out of the DejaGNU board file.
+# The standard transport normally uses rsh/rcp.  Substitute modern SSH tools.
+set_board_info rsh_prog "/usr/bin/ssh"
+set_board_info rcp_prog "/usr/bin/scp"
+
+# This is the Host alias from ~/.ssh/config.
 set_board_info hostname "aarch64-test"
 
-# Remote scratch directory used for test executables.
-# set_board_info remotedir "/tmp/dejagnu"
-
-# The target is a normal Unix-like environment.
+# Ordinary Unix/Linux target.
 set_board_info os_type "unix"

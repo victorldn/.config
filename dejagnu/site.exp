@@ -1,1 +1,3 @@
+# ~/.config/dejagnu/site.exp
+
 lappend boards_dir "$env(HOME)/.config/dejagnu/boards"
