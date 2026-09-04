@@ -1,0 +1,1 @@
+lappend boards_dir "$env(HOME)/.config/dejagnu/boards"
